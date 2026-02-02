@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="https://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xhtml="https://www.w3.org/1999/xhtml">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://www.thoughtdump.in/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- If you later add pages, you can add them like this -->
+
+  <!-- Example: About page (only if you actually have this) -->
+  <!--
+  <url>
+    <loc>https://www.thoughtdump.in/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  -->
+
+  <!-- Example: Privacy page -->
+  <!--
+  <url>
+    <loc>https://www.thoughtdump.in/privacy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  -->
+
+</urlset>
