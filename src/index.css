@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* THOUGHT DUMP - Dark, Minimal, Calm Aesthetic
+   A cathartic void where thoughts disappear forever
+*/
+
+@layer base {
+  :root {
+    /* Deep void palette */
+    --background: 225 25% 4%;
+    --foreground: 45 15% 90%;
+
+    --card: 225 20% 7%;
+    --card-foreground: 45 15% 90%;
+
+    --popover: 225 20% 7%;
+    --popover-foreground: 45 15% 90%;
+
+    /* Ethereal teal accent */
+    --primary: 170 40% 40%;
+    --primary-foreground: 225 25% 4%;
+
+    --secondary: 225 18% 12%;
+    --secondary-foreground: 45 12% 80%;
+
+    --muted: 225 18% 12%;
+    --muted-foreground: 225 15% 50%;
+
+    /* Calm accent - ethereal teal */
+    --accent: 170 45% 35%;
+    --accent-foreground: 45 15% 90%;
+
+    --destructive: 0 55% 50%;
+    --destructive-foreground: 45 15% 90%;
+
+    --border: 225 18% 14%;
+    --input: 225 20% 8%;
+    --ring: 170 40% 40%;
+
+    --radius: 0.75rem;
+
+    /* Custom properties */
+    --void-glow: 170 45% 40%;
+    --void-pulse: 170 60% 30%;
+    --text-dim: 225 15% 40%;
+    --surface-elevated: 225 18% 10%;
+  }
+
+  .dark {
+    --background: 225 25% 4%;
+    --foreground: 45 15% 90%;
+    --card: 225 20% 7%;
+    --card-foreground: 45 15% 90%;
+    --popover: 225 20% 7%;
+    --popover-foreground: 45 15% 90%;
+    --primary: 170 40% 40%;
+    --primary-foreground: 225 25% 4%;
+    --secondary: 225 18% 12%;
+    --secondary-foreground: 45 12% 80%;
+    --muted: 225 18% 12%;
+    --muted-foreground: 225 15% 50%;
+    --accent: 170 45% 35%;
+    --accent-foreground: 45 15% 90%;
+    --destructive: 0 55% 50%;
+    --destructive-foreground: 45 15% 90%;
+    --border: 225 18% 14%;
+    --input: 225 20% 8%;
+    --ring: 170 40% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "cv11", "ss01";
+  }
+}
+
+@layer components {
+  .thought-input {
+    @apply w-full bg-input border border-border/60 rounded-xl p-6
+           text-foreground placeholder:text-muted-foreground/60
+           font-light text-lg leading-relaxed
+           focus:outline-none focus:border-primary/50
+           resize-none transition-all duration-300;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .thought-input:focus {
+    box-shadow: 
+      0 0 0 1px hsl(var(--primary) / 0.2),
+      0 0 40px -10px hsl(var(--void-glow) / 0.3),
+      inset 0 1px 0 0 hsl(var(--foreground) / 0.03);
+  }
+
+  .dump-button {
+    @apply px-10 py-4 bg-primary text-primary-foreground font-mono font-medium text-sm
+           rounded-xl transition-all duration-300 relative overflow-hidden
+           disabled:opacity-30 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .dump-button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 8px 30px -8px hsl(var(--void-glow) / 0.5),
+      0 0 0 1px hsl(var(--primary) / 0.3);
+  }
+
+  .dump-button:not(:disabled):active {
+    transform: translateY(0);
+  }
+
+  .thought-card {
+    @apply p-6 bg-card/50 border border-border/40 rounded-xl
+           backdrop-blur-sm transition-all duration-500;
+  }
+
+  .thought-card:hover {
+    @apply border-border/70 bg-card/70;
+    box-shadow: 
+      0 4px 24px -8px hsl(var(--void-glow) / 0.08),
+      inset 0 1px 0 0 hsl(var(--foreground) / 0.02);
+    transform: translateY(-1px);
+  }
+
+  .void-header {
+    @apply relative;
+  }
+
+  .void-header::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent);
+  }
+
+  .section-divider {
+    @apply border-t border-border/30 relative;
+  }
+
+  .section-divider::before {
+    content: '●';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    color: hsl(var(--muted-foreground) / 0.3);
+    background: hsl(var(--background));
+    padding: 0 12px;
+  }
+}
+
+@layer utilities {
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-fade-in-delayed {
+    animation: fadeIn 0.5s ease-out 0.1s forwards;
+    opacity: 0;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  .text-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--foreground)) 0%,
+      hsl(var(--muted-foreground)) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 30px hsl(var(--void-glow) / 0.3);
+  }
+}
