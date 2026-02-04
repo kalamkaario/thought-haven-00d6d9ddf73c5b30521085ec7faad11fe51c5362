@@ -1,5 +1,7 @@
 import { Thought } from '@/hooks/useThoughts';
 import { formatDistanceToNow } from 'date-fns';
+import { useState } from "react";
+import Comments from "../Comments";
 
 interface ThoughtFeedProps {
   thoughts: Thought[];
@@ -56,26 +58,51 @@ export function ThoughtFeed({ thoughts, loading }: ThoughtFeedProps) {
           </span>
         </div>
       </div>
-      
+
       <div className="space-y-4">
         {thoughts.map((thought, index) => (
-          <article 
-            key={thought.id} 
-            className="thought-card animate-slide-up"
-            style={{ animationDelay: `${index * 0.05}s` }}
-          >
-            <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap break-words text-[15px]">
-              {thought.content}
-            </p>
-            <div className="mt-5 flex items-center gap-3">
-              <div className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-              <time className="text-muted-foreground/50 font-mono text-xs tracking-wide">
-                {formatDistanceToNow(new Date(thought.created_at), { addSuffix: true })}
-              </time>
-            </div>
-          </article>
+          <ThoughtCard key={thought.id} thought={thought} index={index} />
         ))}
       </div>
     </div>
+  );
+}
+
+/* ---------- SEPARATE COMPONENT FOR EACH THOUGHT ---------- */
+
+function ThoughtCard({ thought, index }: { thought: Thought; index: number }) {
+  const [showReplies, setShowReplies] = useState(false);
+
+  return (
+    <article
+      className="thought-card animate-slide-up"
+      style={{ animationDelay: `${index * 0.05}s` }}
+    >
+      <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap break-words text-[15px]">
+        {thought.content}
+      </p>
+
+      {/* VIEW REPLIES BUTTON */}
+      <button
+        onClick={() => setShowReplies(!showReplies)}
+        className="mt-3 text-xs text-muted-foreground/70 hover:text-muted-foreground"
+      >
+        {showReplies ? "Hide replies" : "View replies"}
+      </button>
+
+      {/* COMMENTS SECTION (SHOW ONLY WHEN CLICKED) */}
+      {showReplies && (
+        <div className="mt-3">
+          <Comments thoughtId={thought.id} />
+        </div>
+      )}
+
+      <div className="mt-5 flex items-center gap-3">
+        <div className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+        <time className="text-muted-foreground/50 font-mono text-xs tracking-wide">
+          {formatDistanceToNow(new Date(thought.created_at), { addSuffix: true })}
+        </time>
+      </div>
+    </article>
   );
 }
