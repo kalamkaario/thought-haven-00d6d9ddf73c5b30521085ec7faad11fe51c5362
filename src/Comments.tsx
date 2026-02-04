@@ -5,9 +5,9 @@ import { buildThread } from "./utils";
 export default function Comments({ thoughtId }: { thoughtId: string }) {
   const [threads, setThreads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showBox, setShowBox] = useState(false);
 
   async function loadComments() {
-    setLoading(true);
     const data = await fetchComments(thoughtId);
     setThreads(buildThread(data));
     setLoading(false);
@@ -18,28 +18,45 @@ export default function Comments({ thoughtId }: { thoughtId: string }) {
   }, [thoughtId]);
 
   return (
-    <div className="mt-3 space-y-3">
-      {/* 🔥 ALWAYS VISIBLE REPLY BOX (MAIN FIX) */}
-      <ReplyBox parentId={null} thoughtId={thoughtId} refresh={loadComments} />
+    <div className="relative mt-4 space-y-4">
+      {/* FLOATING REPLY BUTTON */}
+      <button
+        onClick={() => setShowBox(!showBox)}
+        className="absolute -top-2 -right-2 w-9 h-9 rounded-full bg-primary/10 border border-primary/30 
+                   flex items-center justify-center text-primary/70 hover:text-primary 
+                   hover:bg-primary/15 transition-all duration-200 backdrop-blur-sm"
+      >
+        💬
+      </button>
 
-      {loading && (
-        <p className="text-xs text-muted-foreground/60">Loading replies...</p>
+      {/* TOP REPLY BOX (toggles on floating button) */}
+      {showBox && (
+        <div className="mt-2 animate-fade-in">
+          <ReplyBox
+            parentId={null}
+            thoughtId={thoughtId}
+            refresh={loadComments}
+          />
+        </div>
       )}
 
       {!loading && threads.length === 0 && (
-        <p className="text-xs text-muted-foreground/60">
-          No replies yet — be the first.
+        <p className="text-xs text-muted-foreground/60 opacity-70">
+          No replies yet.
         </p>
       )}
 
-      {threads.map((c) => (
-        <Comment
-          key={c.id}
-          comment={c}
-          thoughtId={thoughtId}
-          refresh={loadComments}
-        />
-      ))}
+      <div className="space-y-3">
+        {threads.map((c) => (
+          <Comment
+            key={c.id}
+            comment={c}
+            thoughtId={thoughtId}
+            refresh={loadComments}
+            depth={0}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -48,32 +65,73 @@ function Comment({
   comment,
   thoughtId,
   refresh,
+  depth,
 }: {
   comment: any;
   thoughtId: string;
   refresh: () => void;
+  depth: number;
 }) {
+  const [open, setOpen] = useState(true);
+  const [showReply, setShowReply] = useState(false);
+
   return (
-    <div className="ml-4 border-l border-gray-700 pl-4">
-      <p className="text-sm text-gray-200">{comment.text}</p>
+    <div
+      className={`relative pl-4 transition-all duration-300 ${
+        depth === 0 ? "" : "ml-3"
+      }`}
+      style={{ borderLeft: "1px solid rgba(255,255,255,0.08)" }}
+    >
+      <div className="py-1 animate-fade-in">
+        <p className="text-sm text-foreground/85 font-mono tracking-tight">
+          {comment.text}
+        </p>
 
-      <ReplyBox
-        thoughtId={thoughtId}
-        parentId={comment.id}
-        refresh={refresh}
-      />
+        <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground/60">
+          <button
+            onClick={() => setOpen(!open)}
+            className="hover:text-muted-foreground transition-colors"
+          >
+            {open ? "Hide thread" : "Show thread"}
+          </button>
 
-      {comment.replies.map((r: any) => (
-        <Comment
-          key={r.id}
-          comment={r}
-          thoughtId={thoughtId}
-          refresh={refresh}
-        />
-      ))}
+          <button
+            onClick={() => setShowReply(!showReply)}
+            className="hover:text-muted-foreground transition-colors"
+          >
+            {showReply ? "Cancel" : "Reply"}
+          </button>
+        </div>
+      </div>
+
+      {showReply && (
+        <div className="mt-2 animate-slide-in">
+          <ReplyBox
+            thoughtId={thoughtId}
+            parentId={comment.id}
+            refresh={refresh}
+          />
+        </div>
+      )}
+
+      {open && comment.replies.length > 0 && (
+        <div className="mt-2 space-y-2 transition-all duration-300 ease-in-out">
+          {comment.replies.map((r: any) => (
+            <Comment
+              key={r.id}
+              comment={r}
+              thoughtId={thoughtId}
+              refresh={refresh}
+              depth={depth + 1}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
+
+/* ---------- REPLY INPUT WITH ANIMATED CURSOR ---------- */
 
 function ReplyBox({
   thoughtId,
@@ -104,24 +162,30 @@ function ReplyBox({
   }
 
   return (
-    <div className="mt-2 flex gap-2 items-center">
-      <input
-        className="bg-transparent border-b border-gray-600 text-sm outline-none text-white w-full"
-        placeholder={
-          parentId
-            ? "Write a reply..."
-            : "Add a comment to this thought..."
-        }
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
-      <button
-        onClick={sendReply}
-        disabled={sending}
-        className="text-xs opacity-70 hover:opacity-100"
-      >
-        {sending ? "..." : "send"}
-      </button>
+    <div className="relative p-2 rounded-lg border border-border/30 bg-card/40 backdrop-blur-sm">
+      {/* FUTURISTIC GLOW LINE */}
+      <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+
+      <div className="flex gap-2 items-center">
+        <input
+          className="bg-transparent border-b border-border/40 text-sm outline-none text-foreground w-full 
+                     placeholder:text-muted-foreground/40 cursor-animate"
+          placeholder={
+            parentId
+              ? "Write a reply..."
+              : "Add a comment to this thought..."
+          }
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+        <button
+          onClick={sendReply}
+          disabled={sending}
+          className="text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+        >
+          {sending ? "..." : "send"}
+        </button>
+      </div>
     </div>
   );
 }
