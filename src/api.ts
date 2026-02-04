@@ -22,7 +22,7 @@ export async function postComment({
 }) {
   const { error } = await supabase.from("comments").insert({
     thought_id: thoughtId,
-    parent_id: parentId,
+    parent_id: parentId,   // null = top-level comment
     text,
   });
 
