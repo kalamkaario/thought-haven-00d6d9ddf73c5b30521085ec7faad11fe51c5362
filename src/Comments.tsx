@@ -19,17 +19,20 @@ export default function Comments({ thoughtId }: { thoughtId: string }) {
 
   return (
     <div className="relative mt-4 space-y-4">
-      {/* FLOATING REPLY BUTTON */}
+      {/* ABSTRACT FUTURISTIC REPLY TRIGGER (NO EMOJI) */}
       <button
         onClick={() => setShowBox(!showBox)}
-        className="absolute -top-2 -right-2 w-9 h-9 rounded-full bg-primary/10 border border-primary/30 
-                   flex items-center justify-center text-primary/70 hover:text-primary 
-                   hover:bg-primary/15 transition-all duration-200 backdrop-blur-sm"
+        className="absolute -top-3 right-4 flex items-center gap-2 opacity-40 hover:opacity-80 transition-all group"
       >
-        💬
+        {/* glowing dot */}
+        <span className="w-1.5 h-1.5 rounded-full bg-primary/60 
+                         group-hover:shadow-[0_0_8px_hsl(var(--primary))]" />
+
+        {/* subtle line */}
+        <span className="w-6 h-px bg-gradient-to-r from-primary/60 to-transparent" />
       </button>
 
-      {/* TOP REPLY BOX (toggles on floating button) */}
+      {/* TOP REPLY BOX (toggles on abstract trigger) */}
       {showBox && (
         <div className="mt-2 animate-fade-in">
           <ReplyBox
@@ -131,7 +134,7 @@ function Comment({
   );
 }
 
-/* ---------- REPLY INPUT WITH ANIMATED CURSOR ---------- */
+/* ---------- REPLY INPUT WITH ARROW (NO CIRCLE BUTTON) ---------- */
 
 function ReplyBox({
   thoughtId,
@@ -166,7 +169,7 @@ function ReplyBox({
       {/* FUTURISTIC GLOW LINE */}
       <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
-      <div className="flex gap-2 items-center">
+      <div className="flex items-center gap-2">
         <input
           className="bg-transparent border-b border-border/40 text-sm outline-none text-foreground w-full 
                      placeholder:text-muted-foreground/40 cursor-animate"
@@ -177,13 +180,18 @@ function ReplyBox({
           }
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") sendReply();
+          }}
         />
+
+        {/* MINIMAL ARROW SEND */}
         <button
           onClick={sendReply}
           disabled={sending}
-          className="text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors"
+          className="text-primary/70 hover:text-primary transition-colors text-lg leading-none"
         >
-          {sending ? "..." : "send"}
+          {sending ? "…" : "→"}
         </button>
       </div>
     </div>
