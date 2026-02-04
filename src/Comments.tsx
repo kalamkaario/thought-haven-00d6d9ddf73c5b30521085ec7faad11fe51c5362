@@ -19,7 +19,7 @@ export default function Comments({ thoughtId }: { thoughtId: string }) {
 
   return (
     <div className="relative mt-4 space-y-4">
-      {/* ABSTRACT FUTURISTIC REPLY TRIGGER (NO EMOJI) */}
+      {/* ABSTRACT FUTURISTIC TRIGGER (NO EMOJI, NO CIRCLE) */}
       <button
         onClick={() => setShowBox(!showBox)}
         className="absolute -top-3 right-4 flex items-center gap-2 opacity-40 hover:opacity-80 transition-all group"
@@ -134,7 +134,7 @@ function Comment({
   );
 }
 
-/* ---------- REPLY INPUT WITH ARROW (NO CIRCLE BUTTON) ---------- */
+/* ---------- REPLY INPUT WITH PURE ARROW ➤ ---------- */
 
 function ReplyBox({
   thoughtId,
@@ -185,13 +185,14 @@ function ReplyBox({
           }}
         />
 
-        {/* MINIMAL ARROW SEND */}
+        {/* 👉 PURE ARROW ➤ — NO BACKGROUND, NO BORDER, NO RADIUS */}
         <button
           onClick={sendReply}
           disabled={sending}
-          className="text-primary/70 hover:text-primary transition-colors text-lg leading-none"
+          className="bg-transparent border-0 p-0 m-0 shadow-none focus:outline-none 
+                     text-primary/70 hover:text-primary transition-colors text-lg leading-none"
         >
-          {sending ? "…" : "→"}
+          {sending ? "…" : "➤"}
         </button>
       </div>
     </div>
