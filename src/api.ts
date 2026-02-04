@@ -1,6 +1,8 @@
 import { supabase } from "./supabase";
 
 export async function fetchComments(thoughtId: string) {
+  console.log("Fetching comments for:", thoughtId);
+
   const { data, error } = await supabase
     .from("comments")
     .select("*")
@@ -8,10 +10,11 @@ export async function fetchComments(thoughtId: string) {
     .order("created_at", { ascending: true });
 
   if (error) {
-    console.error("Fetch comments error:", error);
+    console.error("Fetch error:", error);
     return [];
   }
 
+  console.log("Fetched comments:", data);
   return data || [];
 }
 
@@ -24,14 +27,21 @@ export async function postComment({
   parentId: string | null;
   text: string;
 }) {
-  const { error } = await supabase.from("comments").insert({
-    thought_id: thoughtId,
-    parent_id: parentId,
-    text,
-  });
+  console.log("Sending comment:", { thoughtId, parentId, text });
+
+  const { data, error } = await supabase
+    .from("comments")
+    .insert({
+      thought_id: thoughtId,
+      parent_id: parentId,
+      text,
+    })
+    .select(); // important — we get the inserted row back
 
   if (error) {
-    console.error("Insert comment error:", error);
+    console.error("Insert error:", error);
     throw error;
   }
+
+  console.log("Inserted comment:", data);
 }
