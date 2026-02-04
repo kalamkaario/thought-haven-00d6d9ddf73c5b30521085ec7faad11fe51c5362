@@ -7,7 +7,11 @@ export async function fetchComments(thoughtId: string) {
     .eq("thought_id", thoughtId)
     .order("created_at", { ascending: true });
 
-  if (error) throw error;
+  if (error) {
+    console.error("Fetch comments error:", error);
+    return [];
+  }
+
   return data || [];
 }
 
@@ -22,9 +26,12 @@ export async function postComment({
 }) {
   const { error } = await supabase.from("comments").insert({
     thought_id: thoughtId,
-    parent_id: parentId,   // null = top-level comment
+    parent_id: parentId,
     text,
   });
 
-  if (error) throw error;
+  if (error) {
+    console.error("Insert comment error:", error);
+    throw error;
+  }
 }
